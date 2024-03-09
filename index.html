@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My GAME</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div id="overlay"></div>
+
+    <div id="popup">
+      <p id="popup-message" style="color: green"></p>
+      <button style="background-color: cadetblue" onclick="closePopUp()">
+        OK
+      </button>
+    </div>
+    <div id="firstOne">
+      <form onsubmit="submitGuess(event)">
+        <div>
+          <h2 style="color: black">GUESS THE NUMBER</h2>
+          <h3 style="color: midnightblue">Guess Between 1 to 100 0nly</h3>
+          <h4 style="color: mediumslateblue">
+            Only 5 Attempts to guess click on OK First
+          </h4>
+          <label for="forguess">Enter your Number :</label>
+          <input type="text" id="guess" name="forguess" />
+        </div>
+        <div id="firstButton">
+          <button
+            type="submit"
+            id="submitGuessButton"
+            style="background-color: brown"
+          >
+            Submit Guess
+          </button>
+        </div>
+        <br />
+        <div id="lastButton">
+          <button
+            type="submit"
+            style="background-color: aquamarine"
+            onclick="restartGame()"
+          >
+            Restart Game
+          </button>
+        </div>
+      </form>
+      <p id="message" style="color: darkslategrey"></p>
+      <p id="guesses" style="color: black; font-style: initial"></p>
+    </div>
+
+    <script>
+      let guessCount = 0;
+      const maxGuesses = 5;
+      let gameLost = false;
+
+      function showAlertPopUp(message) {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").style.display = "block";
+
+        document.getElementById("popup-message").textContent = message;
+      }
+
+      function closePopUp() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("guess").focus();
+      }
+
+      function generateRandomValue() {
+        const compareValue = Math.floor(Math.random() * 10) * 10;
+        localStorage.setItem("compareValue", compareValue);
+        console.log(compareValue);
+      }
+
+      function restartGame() {
+        guessCount = 0;
+        gameLost = false;
+        document.getElementById("guesses").innerHTML = "";
+        document.getElementById("message").textContent = "";
+        document.getElementById("guess").disabled = false;
+        enableSubmitButton();
+        generateRandomValue();
+
+        closePopUp();
+      }
+      function disableSubmitButton() {
+        document.getElementById("submitGuessButton").disabled = true;
+      }
+
+      function enableSubmitButton() {
+        document.getElementById("submitGuessButton").disabled = false;
+      }
+
+      generateRandomValue();
+
+      function submitGuess(event) {
+        event.preventDefault();
+        if (gameLost) {
+          showAlertPopUp("Sorry, you lost the game! Please restart.");
+          return;
+        }
+        const storedCompareValue = parseFloat(
+          localStorage.getItem("compareValue")
+        );
+        console.log(storedCompareValue);
+        const GuessValue = event.target.forguess.value;
+
+        if (GuessValue === "") {
+          showAlertPopUp("Please enter any value");
+          return;
+        }
+
+        const obj = {
+          GuessValue,
+        };
+        localStorage.setItem(obj.GuessValue, JSON.stringify(obj));
+        document.getElementById("guess").value = "";
+        guessCount++;
+
+        if (guessCount === maxGuesses && storedCompareValue !== parseFloat(obj.GuessValue)) {
+          gameLost = true;
+          disableSubmitButton();
+          showAlertPopUp("Sorry, you lose the game!");
+          document.getElementById("guess").disabled = true;
+        } else if (storedCompareValue === parseFloat(obj.GuessValue)) {
+          gameLost = true;
+          disableSubmitButton();
+          showAlertPopUp("Congratulations! You WON the GAME!!!");
+          document.getElementById("guess").disabled = true;
+        } else if (storedCompareValue > obj.GuessValue) {
+          showAlertPopUp("The number you entered is low");
+        } else {
+          showAlertPopUp("The number you entered is High");
+        }
+
+        showDataOnScreen(obj);
+        console.log('Game Lost:', gameLost);
+    console.log('Guess Count:', guessCount);
+      }
+
+      function showDataOnScreen(obj) {
+        const messsge = document.getElementById("message");
+        message.textContent = "Last Guesses";
+
+        const parentEl = document.getElementById("guesses");
+        const childEl = document.createElement("p");
+        childEl.textContent = obj.GuessValue;
+        parentEl.appendChild(childEl);
+      }
+    </script>
+  </body>
+</html>

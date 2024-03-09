@@ -1,0 +1,36 @@
+#firstOne {
+    background-color: lightgray;
+    padding: 20px;
+    border: 2px solid darkgray;
+    border-radius: 10px;
+    margin: 10px;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    z-index: 1001; 
+    
+}
+#popup{
+   
+    background-color: darkgray;
+    padding: 20px;
+    border: 2px solid darkgray;
+    border-radius: 10px;
+    margin: 10px;
+    
+    position: absolute;
+    top: calc(50% - 270px); 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+   
+}
+#guesses {
+    display: flex;
+    flex-direction: row;
+}
+
+#guesses p {
+    margin-right: 10px; 
+}
